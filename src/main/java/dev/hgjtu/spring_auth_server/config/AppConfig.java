@@ -39,87 +39,87 @@ public class AppConfig implements CommandLineRunner {
     private final Logger logger = LoggerFactory.getLogger(AppConfig.class);
 
     //TODO это что вообще
-    @Bean
-    public UserDetailsService userDetailsService() {
-        var user = User.withUsername("hgjtu")
-            .password("1234")
-            .roles("USER", "ADMIN")
-            .build();
-        return new InMemoryUserDetailsManager(user);
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        var user = User.withUsername("hgjtu")
+//            .password("1234")
+//            .roles("USER", "ADMIN")
+//            .build();
+//        return new InMemoryUserDetailsManager(user);
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
 
-    @Bean
-    public RegisteredClientRepository registeredClientRepository() {
-        RegisteredClient registeredClient = RegisteredClient.withId(String.valueOf(UUID.randomUUID()))
-            .clientId("client")
-            .clientSecret("secret")
-            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-            .redirectUri("http://localhost:9091/oauth/token")
-            .scope("openid")
-            .tokenSettings(
-                TokenSettings.builder()
-                    .accessTokenTimeToLive(Duration.ofHours(6))
-                    .build()
-            )
-            .clientSettings(
-                ClientSettings.builder()
-                    .requireProofKey(false)
-                    .build()
-            )
-            .build();
-
-        // PKCE
-        RegisteredClient registeredClient1 = RegisteredClient.withId(String.valueOf(UUID.randomUUID()))
-            .clientId("client_1")
-            .clientSecret("secret_1")
-            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-            .redirectUri("http://localhost:9092/oauth/token")
-            .scope("openid")
-            .tokenSettings(
-                TokenSettings.builder()
-                    .accessTokenTimeToLive(Duration.ofHours(6))
-                    .build()
-            )
-            .clientSettings(
-                ClientSettings.builder()
-                    .requireProofKey(true)
-                    .build()
-            )
-            .build();
-
-        // Opaque Tokens
-        RegisteredClient registeredClient2 = RegisteredClient.withId(String.valueOf(UUID.randomUUID()))
-                .clientId("client_2")
-                .clientSecret("secret_2")
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("http://localhost:9093/oauth/token")
-                .scope("openid")
-                .tokenSettings(
-                    TokenSettings.builder()
-                        .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
-                        .accessTokenTimeToLive(Duration.ofHours(6))
-                        .build()
-                )
-                .clientSettings(
-                    ClientSettings.builder()
-                        .requireProofKey(true)
-                        .build()
-                )
-                .build();
-
-        return new InMemoryRegisteredClientRepository(registeredClient, registeredClient1, registeredClient2);
-    }
+//    @Bean
+//    public RegisteredClientRepository registeredClientRepository() {
+//        RegisteredClient registeredClient = RegisteredClient.withId(String.valueOf(UUID.randomUUID()))
+//            .clientId("client")
+//            .clientSecret("secret")
+//            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+//            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+//            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+//            .redirectUri("http://localhost:9091/oauth/token")
+//            .scope("openid")
+//            .tokenSettings(
+//                TokenSettings.builder()
+//                    .accessTokenTimeToLive(Duration.ofHours(6))
+//                    .build()
+//            )
+//            .clientSettings(
+//                ClientSettings.builder()
+//                    .requireProofKey(false)
+//                    .build()
+//            )
+//            .build();
+//
+//        // PKCE
+//        RegisteredClient registeredClient1 = RegisteredClient.withId(String.valueOf(UUID.randomUUID()))
+//            .clientId("client_1")
+//            .clientSecret("secret_1")
+//            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+//            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+//            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+//            .redirectUri("http://localhost:9092/oauth/token")
+//            .scope("openid")
+//            .tokenSettings(
+//                TokenSettings.builder()
+//                    .accessTokenTimeToLive(Duration.ofHours(6))
+//                    .build()
+//            )
+//            .clientSettings(
+//                ClientSettings.builder()
+//                    .requireProofKey(true)
+//                    .build()
+//            )
+//            .build();
+//
+//        // Opaque Tokens
+//        RegisteredClient registeredClient2 = RegisteredClient.withId(String.valueOf(UUID.randomUUID()))
+//                .clientId("client_2")
+//                .clientSecret("secret_2")
+//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+//                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+//                .redirectUri("http://localhost:9093/oauth/token")
+//                .scope("openid")
+//                .tokenSettings(
+//                    TokenSettings.builder()
+//                        .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
+//                        .accessTokenTimeToLive(Duration.ofHours(6))
+//                        .build()
+//                )
+//                .clientSettings(
+//                    ClientSettings.builder()
+//                        .requireProofKey(true)
+//                        .build()
+//                )
+//                .build();
+//
+//        return new InMemoryRegisteredClientRepository(registeredClient, registeredClient1, registeredClient2);
+//    }
 
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {

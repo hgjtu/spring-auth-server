@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
@@ -33,8 +34,14 @@ public class SecurityConfig {
     @Bean
     @Order(2)
     public SecurityFilterChain defaultFilterChain(HttpSecurity http) throws Exception {
-        http.formLogin(Customizer.withDefaults());
-        http.authorizeHttpRequests(a -> a.anyRequest().authenticated());
+        http.csrf(AbstractHttpConfigurer::disable).formLogin(Customizer.withDefaults());
+
+        http.authorizeHttpRequests(a -> {
+            a.requestMatchers("/clients")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated();
+        });
         return http.build();
     }
 }
