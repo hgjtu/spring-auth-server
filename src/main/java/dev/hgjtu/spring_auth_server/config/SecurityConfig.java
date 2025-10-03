@@ -23,25 +23,28 @@ public class SecurityConfig {
 //        http.with(OAuth2AuthorizationServerConfigurer.authorizationServer(),
 //                Customizer.withDefaults());
 
+        http
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+            .exceptionHandling(e -> e.authenticationEntryPoint(
+                new LoginUrlAuthenticationEntryPoint("/login")
+            ));
+
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults());
-        http.exceptionHandling(e -> e.authenticationEntryPoint(
-                new LoginUrlAuthenticationEntryPoint("/login")
-        ));
+
         return http.build();
     }
 
     @Bean
     @Order(2)
     public SecurityFilterChain defaultFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable).formLogin(Customizer.withDefaults());
-
-        http.authorizeHttpRequests(a -> {
-            a.requestMatchers("/clients")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated();
-        });
+        http
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(authorize -> authorize
+                    .requestMatchers("/auth/**", "/login").permitAll()
+                    .anyRequest().authenticated()
+            )
+            .formLogin(Customizer.withDefaults());
         return http.build();
     }
 }

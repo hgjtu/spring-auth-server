@@ -15,12 +15,13 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
-import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
@@ -34,27 +35,12 @@ import java.util.UUID;
 import com.nimbusds.jose.jwk.RSAKey;
 
 @Configuration
-public class AppConfig implements CommandLineRunner {
+public class AppConfig {
 
     private final Logger logger = LoggerFactory.getLogger(AppConfig.class);
 
-    //TODO это что вообще
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        var user = User.withUsername("hgjtu")
-//            .password("1234")
-//            .roles("USER", "ADMIN")
-//            .build();
-//        return new InMemoryUserDetailsManager(user);
-//    }
-
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
-    }
-
-//    @Bean
-//    public RegisteredClientRepository registeredClientRepository() {
+    public RegisteredClientRepository registeredClientRepository() {
 //        RegisteredClient registeredClient = RegisteredClient.withId(String.valueOf(UUID.randomUUID()))
 //            .clientId("client")
 //            .clientSecret("secret")
@@ -74,29 +60,31 @@ public class AppConfig implements CommandLineRunner {
 //                    .build()
 //            )
 //            .build();
-//
-//        // PKCE
-//        RegisteredClient registeredClient1 = RegisteredClient.withId(String.valueOf(UUID.randomUUID()))
-//            .clientId("client_1")
-//            .clientSecret("secret_1")
-//            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-//            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-//            .redirectUri("http://localhost:9092/oauth/token")
-//            .scope("openid")
-//            .tokenSettings(
-//                TokenSettings.builder()
-//                    .accessTokenTimeToLive(Duration.ofHours(6))
-//                    .build()
-//            )
-//            .clientSettings(
-//                ClientSettings.builder()
-//                    .requireProofKey(true)
-//                    .build()
-//            )
-//            .build();
-//
-//        // Opaque Tokens
+
+        // PKCE
+        RegisteredClient registeredClient = RegisteredClient.withId(String.valueOf(UUID.randomUUID()))
+            .clientId("web-client")
+            .clientSecret("secret")
+            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+            .redirectUri("http://localhost:5050/login/oauth2/code/web-client")
+            .scope("openid")
+            .tokenSettings(
+                TokenSettings.builder()
+                        .accessTokenTimeToLive(Duration.ofHours(12))
+                        .refreshTokenTimeToLive(Duration.ofDays(4))
+                        .build()
+            )
+            .clientSettings(
+                ClientSettings.builder()
+                    .requireProofKey(true)
+                    .requireAuthorizationConsent(false)
+                    .build()
+            )
+            .build();
+
+        // Opaque Tokens
 //        RegisteredClient registeredClient2 = RegisteredClient.withId(String.valueOf(UUID.randomUUID()))
 //                .clientId("client_2")
 //                .clientSecret("secret_2")
@@ -117,13 +105,14 @@ public class AppConfig implements CommandLineRunner {
 //                        .build()
 //                )
 //                .build();
-//
-//        return new InMemoryRegisteredClientRepository(registeredClient, registeredClient1, registeredClient2);
-//    }
+
+        return new InMemoryRegisteredClientRepository(registeredClient);
+    }
 
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder().build(); //TODO это минимум, что-то нажо добавить (эндпоинт?)
+        return AuthorizationServerSettings.builder() //TODO вроде может быть что-то еще
+                .build();
     }
 
     @Bean
@@ -143,17 +132,22 @@ public class AppConfig implements CommandLineRunner {
         return new ImmutableJWKSet<>(new JWKSet(rsaKey));
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-        byte[] code = new byte[32];
-        new SecureRandom().nextBytes(code);
-        String verifier = Base64.getUrlEncoder().withoutPadding().encodeToString(code);
-
-        byte[] digestedVerifier = MessageDigest
-                .getInstance("SHA-256").digest(verifier.getBytes());
-        String codeChallenge = Base64.getUrlEncoder().withoutPadding().encodeToString(digestedVerifier);
-
-        logger.info("Challenge Verifier: " + verifier); //TODO а на кой
-        logger.info("Code Challenge: " + codeChallenge);
+    @Bean
+    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
+        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
     }
+
+//    @Override
+//    public void run(String... args) throws Exception {
+//        byte[] code = new byte[32];
+//        new SecureRandom().nextBytes(code);
+//        String verifier = Base64.getUrlEncoder().withoutPadding().encodeToString(code);
+//
+//        byte[] digestedVerifier = MessageDigest
+//                .getInstance("SHA-256").digest(verifier.getBytes());
+//        String codeChallenge = Base64.getUrlEncoder().withoutPadding().encodeToString(digestedVerifier);
+//
+//        logger.info("Challenge Verifier: " + verifier); //TODO а на кой
+//        logger.info("Code Challenge: " + codeChallenge);
+//    }
 }
