@@ -19,6 +19,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
+//        http.with(OAuth2AuthorizationServerConfigurer.authorizationServer(),
+//                Customizer.withDefaults());
+
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults());
         http.exceptionHandling(e -> e.authenticationEntryPoint(
