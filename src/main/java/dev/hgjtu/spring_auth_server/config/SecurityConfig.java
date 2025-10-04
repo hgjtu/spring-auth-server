@@ -1,5 +1,7 @@
 package dev.hgjtu.spring_auth_server.config;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -11,6 +13,8 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
 
 @Configuration
 public class SecurityConfig {
@@ -24,13 +28,21 @@ public class SecurityConfig {
 //                Customizer.withDefaults());
 
         http
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
-            .exceptionHandling(e -> e.authenticationEntryPoint(
-                new LoginUrlAuthenticationEntryPoint("/login")
-            ));
+            .exceptionHandling(exceptions -> exceptions
+                    .authenticationEntryPoint(
+                            new LoginUrlAuthenticationEntryPoint("/login")
+                    )
+            )
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-                .oidc(Customizer.withDefaults());
+                .oidc(oidc -> oidc
+                        .providerConfigurationEndpoint(provider -> provider
+                                .providerConfigurationCustomizer(customizer -> {
+                                    // Настраиваем OIDC provider configuration
+                                })
+                        )
+                );
 
         return http.build();
     }
@@ -40,11 +52,33 @@ public class SecurityConfig {
     public SecurityFilterChain defaultFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
+            .requestCache(cache -> cache
+                    .requestCache(requestCache())
+            )
             .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers("/auth/**", "/login").permitAll()
+                    .requestMatchers("/auth/**", "/login",
+                            "/error",
+                            "/.well-known/appspecific/com.chrome.devtools.json").permitAll()
                     .anyRequest().authenticated()
             )
             .formLogin(Customizer.withDefaults());
         return http.build();
+    }
+
+    @Bean
+    public RequestCache requestCache() {
+        return new HttpSessionRequestCache() {
+            @Override
+            public void saveRequest(HttpServletRequest request, HttpServletResponse response) {
+                // Сохраняем только OAuth запросы, игнорируем запросы от инструментов разработчика
+                String requestUrl = request.getRequestURL().toString();
+                if (requestUrl.contains("/oauth2/authorize")) {
+                    super.saveRequest(request, response);
+                    System.out.println("✅ Saved OAuth request: " + requestUrl);
+                } else {
+                    System.out.println("❌ Ignored non-OAuth request: " + requestUrl);
+                }
+            }
+        };
     }
 }
