@@ -65,7 +65,6 @@ public class AppConfig {
             .redirectUri("http://localhost:5050/login/oauth2/code/web-client")
             .scope("read")
             .scope("openid")
-
             .scope("profile")
             .tokenSettings(
                 TokenSettings.builder()
