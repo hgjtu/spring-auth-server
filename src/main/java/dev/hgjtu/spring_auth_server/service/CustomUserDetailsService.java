@@ -3,6 +3,7 @@ package dev.hgjtu.spring_auth_server.service;
 import dev.hgjtu.spring_auth_server.model.UserCredentials;
 import dev.hgjtu.spring_auth_server.repos.UserCredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,7 +46,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     public void initDefaultUsers() {
-        // Создаем администратора, если его нет
         if (!userCredentialsRepository.existsByUsername("admin")) {
             createUserCredentials("admin", "1234", List.of("USER", "ADMIN"));
         }

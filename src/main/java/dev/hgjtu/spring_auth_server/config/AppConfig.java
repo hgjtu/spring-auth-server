@@ -34,30 +34,10 @@ public class AppConfig {
 
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
-//        RegisteredClient registeredClient = RegisteredClient.withId(String.valueOf(UUID.randomUUID()))
-//            .clientId("client")
-//            .clientSecret("secret")
-//            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-//            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-//            .redirectUri("http://localhost:9091/oauth/token")
-//            .scope("openid")
-//            .tokenSettings(
-//                TokenSettings.builder()
-//                    .accessTokenTimeToLive(Duration.ofHours(6))
-//                    .build()
-//            )
-//            .clientSettings(
-//                ClientSettings.builder()
-//                    .requireProofKey(false)
-//                    .build()
-//            )
-//            .build();
-
         // PKCE
         RegisteredClient registeredClient = RegisteredClient.withId(String.valueOf(UUID.randomUUID()))
             .clientId("web-client")
-            .clientSecret("secret")
+            .clientSecret("{noop}secret")
             .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
@@ -78,28 +58,6 @@ public class AppConfig {
                     .build()
             )
             .build();
-
-        // Opaque Tokens
-//        RegisteredClient registeredClient2 = RegisteredClient.withId(String.valueOf(UUID.randomUUID()))
-//                .clientId("client_2")
-//                .clientSecret("secret_2")
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-//                .redirectUri("http://localhost:9093/oauth/token")
-//                .scope("openid")
-//                .tokenSettings(
-//                    TokenSettings.builder()
-//                        .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
-//                        .accessTokenTimeToLive(Duration.ofHours(6))
-//                        .build()
-//                )
-//                .clientSettings(
-//                    ClientSettings.builder()
-//                        .requireProofKey(true)
-//                        .build()
-//                )
-//                .build();
 
         return new InMemoryRegisteredClientRepository(registeredClient);
     }
@@ -131,18 +89,4 @@ public class AppConfig {
     public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
         return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
     }
-
-//    @Override
-//    public void run(String... args) throws Exception {
-//        byte[] code = new byte[32];
-//        new SecureRandom().nextBytes(code);
-//        String verifier = Base64.getUrlEncoder().withoutPadding().encodeToString(code);
-//
-//        byte[] digestedVerifier = MessageDigest
-//                .getInstance("SHA-256").digest(verifier.getBytes());
-//        String codeChallenge = Base64.getUrlEncoder().withoutPadding().encodeToString(digestedVerifier);
-//
-//        logger.info("Challenge Verifier: " + verifier); //TODO а на кой
-//        logger.info("Code Challenge: " + codeChallenge);
-//    }
 }
