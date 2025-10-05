@@ -1,14 +1,16 @@
 package dev.hgjtu.spring_auth_server.config;
 
+import dev.hgjtu.spring_auth_server.service.CustomUserDetailsService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -18,6 +20,19 @@ import org.springframework.security.web.savedrequest.RequestCache;
 
 @Configuration
 public class SecurityConfig {
+
+//    @Autowired
+//    private CustomUserDetailsService userDetailsService;
+//
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        return userDetailsService;
+//    }
+
+    @Bean
+    public UserDetailsService userDetailsService(CustomUserDetailsService customUserDetailsService) {
+        return customUserDetailsService;
+    }
 
     @Bean
     @Order(1)
