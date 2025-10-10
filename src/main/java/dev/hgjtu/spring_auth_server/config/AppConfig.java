@@ -40,7 +40,7 @@ public class AppConfig {
             .clientSecret("{noop}secret")
             .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            .authorizationGrantType(AuthorizationGrantType.PASSWORD)
+//            .authorizationGrantType(AuthorizationGrantType.PASSWORD)
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
             .redirectUri("http://localhost:5050/login/oauth2/code/web-client")
             .scope("read")
