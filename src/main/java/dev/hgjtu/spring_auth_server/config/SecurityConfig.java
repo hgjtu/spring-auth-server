@@ -59,6 +59,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers("/auth/**", "/login",
                             "/error",
+                            "/actuator/**",
                             "/.well-known/appspecific/com.chrome.devtools.json").permitAll()
                     .anyRequest().authenticated()
             )
