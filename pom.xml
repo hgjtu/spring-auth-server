@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>dev.hgjtu</groupId>
-	<artifactId>spring-auth-server</artifactId>
+	<artifactId>sd-auth-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring-auth-server</name>
+	<name>sd-auth-server</name>
 	<description>oAuth2</description>
 	<url/>
 	<licenses>
