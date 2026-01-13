@@ -42,7 +42,7 @@ public class AppConfig {
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
 //            .authorizationGrantType(AuthorizationGrantType.PASSWORD)
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-            .redirectUri("http://localhost:5050/login/oauth2/code/web-client")
+            .redirectUri("http://localhost:5050/login/oauth2/code/web-client") // TODO 194.87.94.103
             .scope("read")
             .scope("openid")
             .scope("profile")

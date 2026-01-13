@@ -43,6 +43,7 @@ public class AuthController {
             );
 
         } catch (RuntimeException e) {
+//            e.printStackTrace();
             return ResponseEntity.badRequest().body(
                     new ErrorResponse(e.getMessage())
             );
