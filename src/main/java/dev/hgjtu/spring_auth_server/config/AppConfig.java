@@ -49,7 +49,8 @@ public class AppConfig {
             .tokenSettings(
                 TokenSettings.builder()
                         .accessTokenTimeToLive(Duration.ofHours(12))
-                        .refreshTokenTimeToLive(Duration.ofDays(4))
+                        .refreshTokenTimeToLive(Duration.ofDays(3))
+                        .reuseRefreshTokens(false)
                         .build()
             )
             .clientSettings(

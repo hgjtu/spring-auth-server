@@ -1,18 +1,23 @@
 package dev.hgjtu.spring_auth_server.controller;
 
+import dev.hgjtu.spring_auth_server.dto.ChangePasswordRequest;
 import dev.hgjtu.spring_auth_server.dto.ErrorResponse;
 import dev.hgjtu.spring_auth_server.dto.RegistrationRequest;
 import dev.hgjtu.spring_auth_server.dto.RegistrationResponse;
 import dev.hgjtu.spring_auth_server.model.UserCredentials;
 import dev.hgjtu.spring_auth_server.service.CustomUserDetailsService;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.attribute.UserPrincipal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -47,6 +52,19 @@ public class AuthController {
             return ResponseEntity.badRequest().body(
                     new ErrorResponse(e.getMessage())
             );
+        }
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(Authentication authentication,
+                                            @RequestBody ChangePasswordRequest request) {
+        try {
+            userDetailsService.changePassword(authentication.getName(), request);
+            return ResponseEntity.ok(Map.of("message", "Password changed successfully"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }
