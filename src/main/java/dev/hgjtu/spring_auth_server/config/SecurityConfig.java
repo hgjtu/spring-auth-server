@@ -48,7 +48,7 @@ public class SecurityConfig {
         http
                 .securityMatcher("/auth/**") // ВАЖНО: только API эндпоинты
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth/change-password").authenticated()
+                        .requestMatchers("/auth/change-password", "/auth/change-email").authenticated()
                         .requestMatchers("/auth/register").permitAll()
                         .anyRequest().authenticated()
                 )

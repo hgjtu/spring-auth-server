@@ -67,4 +67,17 @@ public class AuthController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PostMapping("/change-email")
+    public ResponseEntity<?> changeEmail(Authentication authentication,
+                                            @RequestBody String newEmail) {
+        try {
+            userDetailsService.changeEmail(authentication.getName(), newEmail);
+            return ResponseEntity.ok(Map.of("message", "Email changed successfully"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

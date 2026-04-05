@@ -71,9 +71,20 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         userCredentials.setPassword(passwordEncoder.encode(request.getNewPassword()));
-
         log.info("Password changed successfully for user: {}", userCredentials.getUsername());
+        userCredentialsRepository.save(userCredentials);
+    }
 
+    public void changeEmail(String username, String newEmail) {
+        UserCredentials userCredentials = userCredentialsRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        if (newEmail.equals(userCredentials.getEmail())) {
+            throw new IllegalArgumentException("New email must be different from current email");
+        }
+
+        userCredentials.setEmail(newEmail);
+        log.info("Email changed successfully for user: {}", userCredentials.getUsername());
         userCredentialsRepository.save(userCredentials);
     }
 
