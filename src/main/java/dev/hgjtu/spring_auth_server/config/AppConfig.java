@@ -61,7 +61,7 @@ public class AppConfig {
             )
             .build();
 
-        return new InMemoryRegisteredClientRepository(registeredClient);
+        return new InMemoryRegisteredClientRepository(registeredClient); // TODO Должно храниться в базе
     }
 
     @Bean

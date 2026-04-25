@@ -75,7 +75,11 @@ public class SecurityConfig {
                                 "/.well-known/appspecific/com.chrome.devtools.json").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults());
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .permitAll()
+                );
 
         return http.build();
     }
