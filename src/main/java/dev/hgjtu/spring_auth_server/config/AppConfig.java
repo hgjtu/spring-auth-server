@@ -6,6 +6,7 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -32,6 +33,9 @@ public class AppConfig {
 
     private final Logger logger = LoggerFactory.getLogger(AppConfig.class);
 
+    @Value("${home_server.ip}")
+    private String homeServerIp;
+
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
         // PKCE
@@ -42,7 +46,7 @@ public class AppConfig {
             .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
 //            .authorizationGrantType(AuthorizationGrantType.PASSWORD)
             .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-            .redirectUri("http://localhost:5050/login/oauth2/code/web-client") // TODO 194.87.94.103
+            .redirectUri("http://" + homeServerIp + ":5050/login/oauth2/code/web-client") // TODO 194.87.94.103
             .scope("read")
             .scope("openid")
             .scope("profile")
